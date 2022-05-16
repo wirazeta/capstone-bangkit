@@ -1,10 +1,19 @@
+// database adalah db_api dengan tavel bernama members
 const mysql = require('mysql');
-
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'capstone_bangkit'
+const pool = mysql.createPool({
+  connectionLimit : 10,
+  host            : 'localhost',
+  user            : 'root',
+  password        : '',
+  database        : 'capstone_bangkit'
 });
 
-module.exports = db;
+var getConnection = (callback) => {
+  pool.getConnection((err, connection) => {
+      callback(err, connection);
+    });
+};
+
+module.exports = {
+	getConn: getConnection,
+}
