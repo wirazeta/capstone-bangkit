@@ -7,10 +7,6 @@ const db = require('../Database/db');
 // var users = require('./routes/users')
 // var products = require('./routes/products')
 
-var bodyParser = require('body-parser')
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
-
 const { isAuthorized } = require("./auth");
 var methodOverride = require('method-override');
 const { error } = require("console");
@@ -49,14 +45,15 @@ app.post("/login", (req, res) => {
         let s_email = req.body.email;
         let s_Password = req.body.Password;
 
+        console.log(s_email);
+
         db.getConn((errdb, conn) => {
             if (errdb) { return res.status(500).send("Gagal Terkoneksi"); }
             //tabel yang digunakan bernama "user"
-            conn.query('SELECT * FROM user where email=?', s_email, (err, results, fields) => {
+            conn.query('SELECT * FROM user where email=?',s_email, (err, results, fields) => {
                     conn.release();
-                    if (err) { return res.status(400).send("Error"); }
+                    if (err) { return res.status(400).send(err); }
                     if (results) {
-                        console.log(s_Password);
                         if (results.length > 0 && results[0].Password == s_Password) {
                             let privateKey = fs.readFileSync('./private.pem', 'utf8');
                             let payload = {

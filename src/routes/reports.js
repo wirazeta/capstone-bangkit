@@ -5,11 +5,24 @@ const path = require('path');
 const db = require('../Database/db');
 
 route.post('/input', multer.single('img'), (req, res) => {
+    //req.body.img (key = img);
     let filepath = '../uploads/' + req.file.filename;
     let email = req.query.email;
     let content = req.body.content;
+    let latitude = req.body.latitude;
+    let longitude = req.body.longitude;
 
-    const query = `INSERT INTO report (Email, Content, Image, Likes) VALUES ("${email}","${content}","${filepath}", 0);`;
+    if(latitude === undefined){
+        latitude = 0.0;
+    }
+
+    if(longitude === undefined){
+        longitude = 0.0;
+    }
+
+    // console.log(req);
+
+    const query = `INSERT INTO report (Email, Content, Image, Likes, Latitude, Longitude) VALUES ("${email}","${content}","${filepath}", 0, ${latitude}, ${longitude});`;
     db.getConn((errdb,connect) => {
         if(errdb)return res.status(500).send("Connection Database Failed");
         connect.query(query, (err,result) => {
@@ -88,6 +101,9 @@ route.delete('/:id', (req, res) => {
     const query = `DELETE FROM report WHERE ReportID = ${req.params.id}`;
     db.getConn((errdb,connect) => {
         if(errdb) return res.status(500).send("Connection Database Failed");
+        connect.query(`DELETE FROM comment WHERE ReportID = ${req.params.id}`, (err, result) => {
+                if(err) throw err;
+        })
         connect.query(query, (err, result) => {
             if(err) throw err;
             res.status(200).json({
@@ -99,6 +115,7 @@ route.delete('/:id', (req, res) => {
 })
 
 route.post('/:id/comments/input', (req, res) => {
+
     const query = `INSERT INTO comment(ReportID, Content, Email) VALUES ("${req.params.id}", "${req.query.content}", "${req.query.email}")`;
     db.getConn((errdb, connect) => {
         if(errdb) return res.status(500).send("Connection Database Failed");
