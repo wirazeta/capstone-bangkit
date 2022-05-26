@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 24, 2022 at 05:17 AM
+-- Generation Time: May 26, 2022 at 08:18 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.4.23
 
@@ -61,14 +61,6 @@ CREATE TABLE `comment` (
   `Email` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `comment`
---
-
-INSERT INTO `comment` (`CommentID`, `ReportID`, `Content`, `Email`) VALUES
-(2, 4, 'Kenapa ada tanda tangan wira ?', 'wirazettaprakosa@gmail.com'),
-(3, 5, 'Jalannya rusak parah', 'wirazettaprakosa@gmail.com');
-
 -- --------------------------------------------------------
 
 --
@@ -80,16 +72,17 @@ CREATE TABLE `report` (
   `Email` varchar(255) NOT NULL,
   `Content` varchar(255) NOT NULL,
   `Image` varchar(255) NOT NULL,
-  `Likes` int(11) NOT NULL
+  `Likes` int(11) NOT NULL,
+  `Latitude` double NOT NULL,
+  `Longitude` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `report`
 --
 
-INSERT INTO `report` (`ReportID`, `Email`, `Content`, `Image`, `Likes`) VALUES
-(4, 'wirazettaprakosa@gmail.com', 'Tanda tangan wira 2', '../uploads/img-1652497878618.png', 1),
-(5, 'wirazettaprakosa@gmail.com', 'Jalan rusak di Jl.Supratman Kota Bandung', '../uploads/img-1652794340551.png', 1);
+INSERT INTO `report` (`ReportID`, `Email`, `Content`, `Image`, `Likes`, `Latitude`, `Longitude`) VALUES
+(8, 'wirazettaprakosa@gmail.com', 'Ini jalan rusak di Jln. Pattimura', '../uploads/img-1653545777283.jpg', 0, 1231.12312, 1121.12312);
 
 -- --------------------------------------------------------
 
@@ -112,7 +105,8 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`UserID`, `Email`, `Password`, `Name`, `phone_number`) VALUES
 (1, 'wirazettaprakosa@gmail.com', 'kuroko11', 'Wira Zeta Prakosa', '082293286850'),
 (2, 'bintang@gmail.com', '123456', 'Bintang', '082210233645'),
-(3, 'andi@gmail.com', '123456', 'Andi', '08221234532111');
+(3, 'andi@gmail.com', '123456', 'Andi', '08221234532111'),
+(5, 'kurnia@gmail.com', '123456', 'Kurnia', '081231241231231');
 
 --
 -- Indexes for dumped tables
@@ -174,19 +168,19 @@ ALTER TABLE `agency`
 -- AUTO_INCREMENT for table `comment`
 --
 ALTER TABLE `comment`
-  MODIFY `CommentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `CommentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `report`
 --
 ALTER TABLE `report`
-  MODIFY `ReportID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `ReportID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
