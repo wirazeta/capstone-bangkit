@@ -3,10 +3,22 @@ const route = express.Router();
 const multer = require('../multer');
 const path = require('path');
 const db = require('../Database/db');
+const uploadImage = require('../helper');
 
 route.post('/input', multer.single('img'), (req, res) => {
     //req.body.img (key = img);
-    let filepath = '../uploads/' + req.file.filename;
+
+    let filepath = uploadImage(req.file);
+
+    console.log(filepath);
+
+    if(filepath === undefined){
+        return res.status(400).send({
+            status: 'fail',
+            message: 'Upload error, please try again'
+        });
+    }
+
     let email = req.query.email;
     let content = req.body.content;
     let latitude = req.body.latitude;
