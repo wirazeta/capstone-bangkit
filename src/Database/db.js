@@ -2,10 +2,10 @@
 const mysql = require('mysql');
 const pool = mysql.createPool({
   connectionLimit : 10,
-  host            : 'localhost',
-  user            : 'root',
+  host            : '35.239.104.145',
+  user            : 'admin',
   Password        : '',
-  database        : 'capstone_bangkit'
+  database        : 'petang_database'
 });
 
 var getConnection = (callback) => {
