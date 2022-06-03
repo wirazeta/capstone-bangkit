@@ -10,15 +10,6 @@ route.post('/input', multer.single('img'), (req, res) => {
 
     let filepath = uploadImage(req.file);
 
-    console.log(filepath);
-
-    if(filepath === undefined){
-        return res.status(400).send({
-            status: 'fail',
-            message: 'Upload error, please try again'
-        });
-    }
-
     let email = req.query.email;
     let content = req.body.content;
     let latitude = req.body.latitude;
@@ -31,9 +22,14 @@ route.post('/input', multer.single('img'), (req, res) => {
     if(longitude === undefined){
         longitude = 0.0;
     }
-
     // console.log(req);
 
+    if(filepath === undefined || email === undefined || content === undefined){
+        return res.status(400).send({
+            status: 'fail',
+            message: 'Upload error, please try again'
+        });
+    }
     const query = `INSERT INTO report (Email, Content, Image, Likes, Latitude, Longitude) VALUES ("${email}","${content}","${filepath}", 0, ${latitude}, ${longitude});`;
     db.getConn((errdb,connect) => {
         if(errdb)return res.status(500).send("Connection Database Failed");
@@ -68,7 +64,10 @@ route.get('/:id', (req, res) => {
     db.getConn((errdb, connect) => {
         if(errdb) return res.status(500).send("Connection Database Failed");
         connect.query(query, (err, result) => {
-            if(err) throw err;
+            if(err) res.status(404).json({
+                status: 'fail',
+                message: 'Report Not Found'
+            });
             const reports = JSON.parse(JSON.stringify(result[0]));
             res.status(200).json({
                 status: "success",
@@ -84,7 +83,10 @@ route.get('/:id/Likes', (req, res) => {
     db.getConn((errdb, connect) => {
         if(errdb) return res.status(500).send("Connection Database Failed");
         connect.query(query, (err, result) => {
-            if(err) throw err;
+            if(err) if(err) res.status(404).json({
+                status: 'fail',
+                message: 'Report Not Found'
+            });;
             const reports = JSON.parse(JSON.stringify(result[0]));
             res.status(200).json({
                 status: "Success",
@@ -100,7 +102,10 @@ route.put('/:id/likes/input', (req, res) => {
     db.getConn((errdb, connect) => {
         if(errdb) return res.status(500).send("Connection Database Failed");
         connect.query(query, (err, result) => {
-            if(err)throw err;
+            if(err)if(err) res.status(404).json({
+                status: 'fail',
+                message: 'Report Not Found'
+            });
             res.status(200).json({
                 status: "success",
                 message: "Likes Inserted"
@@ -117,7 +122,10 @@ route.delete('/:id', (req, res) => {
                 if(err) throw err;
         })
         connect.query(query, (err, result) => {
-            if(err) throw err;
+            if(err) if(err) res.status(404).json({
+                status: 'fail',
+                message: 'Report Not Found'
+            });
             res.status(200).json({
                 status: "success",
                 message: `Data ID ${req.params.id} has been delete`
@@ -129,6 +137,12 @@ route.delete('/:id', (req, res) => {
 route.post('/:id/comments/input', (req, res) => {
 
     const query = `INSERT INTO comment(ReportID, Content, Email) VALUES ("${req.params.id}", "${req.query.content}", "${req.query.email}")`;
+    if(req.params.id === undefined || req.query.content === undefined || req.query.email === undefined){
+        return res.status(400).send({
+            status: 'fail',
+            message: 'Upload error, please try again'
+        });
+    }
     db.getConn((errdb, connect) => {
         if(errdb) return res.status(500).send("Connection Database Failed");
         connect.query(query, (err, result) => {
@@ -146,7 +160,10 @@ route.delete('/:id/comment/:commentId', (req, res) => {
     db.getConn((errdb, connect) => {
         if(errdb) return res.status(500).send("Connection Database Failed");
         connect.query(query, (err, result) => {
-            if(err)throw err;
+            if(err) if(err) res.status(404).json({
+                status: 'fail',
+                message: 'Comment Not Found'
+            });
             res.status(200).json({
                 status: "success",
                 message: `Comment ID ${req.params.commentId} for report ID ${req.params.id} has been delete`
@@ -175,7 +192,10 @@ route.get('/:id/comments/:commentId', (req, res) => {
     const query = `SELECT * FROM comment WHERE ReportID = ${req.params.id} AND CommentID = ${req.params.commentId}`;
     db.getConn((errdb, connect) => {
         connect.query(query, (err, result) => {
-            if(err)throw err;
+            if(err)if(err) if(err) res.status(404).json({
+                status: 'fail',
+                message: 'Comment Not Found'
+            });
             const comments = JSON.parse(JSON.stringify(result[0]));
             res.status(200).json({
                 status: 'success',
