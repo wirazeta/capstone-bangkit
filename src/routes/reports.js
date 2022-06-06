@@ -208,7 +208,7 @@ route.get('/:id/comments/:commentId', (req, res) => {
 });
 
 route.get('/search', (req, res) => {
-    const query = `SELECT * FROM report WHERE content LIKES %${req.body.content}%`;
+    const query = `SELECT * FROM report WHERE content LIKE %${req.body.content}%`;
     db.getConn((errdb, connect) => {
         if(errdb) res.status(500).send("Connection Database Failed");
         connect.query(query, (err, result) => {
