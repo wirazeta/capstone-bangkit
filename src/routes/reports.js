@@ -191,8 +191,9 @@ route.get('/:id/comments/', (req, res) => {
 route.get('/:id/comments/:commentId', (req, res) => {
     const query = `SELECT * FROM comment WHERE ReportID = ${req.params.id} AND CommentID = ${req.params.commentId}`;
     db.getConn((errdb, connect) => {
+        if(errdb) res.status(500).send('Connection Database Failed');
         connect.query(query, (err, result) => {
-            if(err)if(err) if(err) res.status(404).json({
+            if(err) res.status(404).json({
                 status: 'fail',
                 message: 'Comment Not Found'
             });
@@ -205,5 +206,24 @@ route.get('/:id/comments/:commentId', (req, res) => {
         });
     })
 });
+
+route.get('/search', (req, res) => {
+    const query = `SELECT * FROM report WHERE content LIKES %${req.body.content}%`;
+    db.getConn((errdb, connect) => {
+        if(errdb) res.status(500).send("Connection Database Failed");
+        connect.query(query, (err, result) => {
+            if(err) res.send(404).json({
+                status: 'fail',
+                message: 'Report Not Found'  
+            });
+            const report = JSON.parse(JSON.stringify(result[0]));
+            res.status(200).json({
+                status: 'success',
+                message: `Get Report`,
+                data: report
+            });
+        })
+    })
+})
 
 module.exports = route;
